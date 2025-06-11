@@ -2,56 +2,53 @@
 @using BlazorBootstrap
 
 <section class="section-page">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Transactions</h4>
+        <Button Color="ButtonColor.Primary">Add New Transaction</Button>
+    </div>
+    <div class="mt-3">
+        <Grid @ref="grid"
+            TItem="Transaction"
+            Class="table table-hover table-bordered"
+            DataProvider="TransactionsDataProvider"
+            FixedHeader="true"
+            AllowFiltering="true"
+            AllowPaging="true"
+            PageSize="5"
+            PageSizeSelectorVisible="false" 
+            PageSizeSelectorItems="@(new int[] { 5,10,20 })"
+            Height="380"
+            Responsive="true"
+            Unit="Unit.Px"
+            > 
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Transactions</h4>
-    <Button Color="ButtonColor.Primary">Add New Transaction</Button>
-</div>
-<div class="mt-3">
-<Grid @ref="grid"
-      TItem="Transaction"
-      Class="table table-hover table-bordered"
-      DataProvider="TransactionsDataProvider"
-      FixedHeader="true"
-      AllowFiltering="true"
-      AllowPaging="true"
-      PageSize="5"
-    PageSizeSelectorVisible="false" 
-      PageSizeSelectorItems="@(new int[] { 5,10,20 })"
-      Height="380"
-      Responsive="true"
-      Unit="Unit.Px"
-      > 
-
-    <GridColumns>
-        <GridColumn TItem="Transaction" HeaderText="Id" PropertyName="Id" Filterable="false">
-            @context.Id
-        </GridColumn>
-        <GridColumn TItem="Transaction" HeaderText="Date" PropertyName="Date" FilterTextboxWidth="100">
-            @context.Date.ToString("yyyy-MM-dd")
-        </GridColumn>
-        <GridColumn TItem="Transaction" HeaderText="Description" PropertyName="Description">
-            @context.Description
-        </GridColumn>
-        <GridColumn TItem="Transaction" HeaderText="Amount" PropertyName="Amount" FilterTextboxWidth="100">
-            <span class="@(context.Amount < 0 ? "text-danger" : "text-success")">
-                @context.Amount.ToString("C")
-            </span>
-        </GridColumn>
-        <GridColumn TItem="Transaction" HeaderText="Status" PropertyName="Status" FilterTextboxWidth="100">
-            <span class="badge @(GetStatusClass(context.Status))">
-                @context.Status
-            </span>
-        </GridColumn>
-        <GridColumn TItem="Transaction" HeaderText="Action" PropertyName="Action" Filterable="false">
-            <Button class="m-1" Color="ButtonColor.Secondary" Size="ButtonSize.Small" Outline="true" > Modify </Button>
-            <Button class="m-1" Color="ButtonColor.Danger" Size="ButtonSize.Small" Outline="true"> Remove </Button>
-        </GridColumn>
-    </GridColumns>
-
-</Grid>
-</div>
-
+            <GridColumns>
+                <GridColumn TItem="Transaction" HeaderText="Id" PropertyName="Id" Filterable="false">
+                    @context.Id
+                </GridColumn>
+                <GridColumn TItem="Transaction" HeaderText="Date" PropertyName="Date" FilterTextboxWidth="100">
+                    @context.Date.ToString("yyyy-MM-dd")
+                </GridColumn>
+                <GridColumn TItem="Transaction" HeaderText="Description" PropertyName="Description">
+                    @context.Description
+                </GridColumn>
+                <GridColumn TItem="Transaction" HeaderText="Amount" PropertyName="Amount" FilterTextboxWidth="100">
+                    <span class="@(context.Amount < 0 ? "text-danger" : "text-success")">
+                        @context.Amount.ToString("C")
+                    </span>
+                </GridColumn>
+                <GridColumn TItem="Transaction" HeaderText="Status" PropertyName="Status" FilterTextboxWidth="100">
+                    <span class="badge @(GetStatusClass(context.Status))">
+                        @context.Status
+                    </span>
+                </GridColumn>
+                <GridColumn TItem="Transaction" HeaderText="Action" PropertyName="Action" Filterable="false">
+                    <Button class="m-1" Color="ButtonColor.Secondary" Size="ButtonSize.Small" Outline="true" > Modify </Button>
+                    <Button class="m-1" Color="ButtonColor.Danger" Size="ButtonSize.Small" Outline="true"> Remove </Button>
+                </GridColumn>
+            </GridColumns>
+        </Grid>
+    </div>
 </section>
 @code {
     public class Transaction
@@ -80,15 +77,15 @@
     }
 
     private string GetStatusClass(string status)
-{
-    return status switch
     {
-        "Completed" => "bg-success",
-        "Pending"   => "bg-warning text-dark",
-        "Failed"    => "bg-danger ",
-        _           => "bg-secondary"
-    };
-}
+        return status switch
+        {
+            "Completed" => "bg-success",
+            "Pending"   => "bg-warning text-dark",
+            "Failed"    => "bg-danger ",
+            _           => "bg-secondary"
+        };
+    }
 
     private IEnumerable<Transaction> GetEmployees()
     {

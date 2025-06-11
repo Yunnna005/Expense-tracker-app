@@ -1,0 +1,85 @@
+@using BlazorBootstrap
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="overlay-backdrop">
+    <div class="overlay-content">
+        <h5>Add New Transaction</h5>
+        <EditForm Model="@TransactionModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <InputText id="description" class="form-control rounded-md" @bind-Value="TransactionModel.Description" placeholder="e.g., Monthly Rent" />
+                <ValidationMessage For="@(() => TransactionModel.Description)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <InputNumber id="amount" class="form-control rounded-md" @bind-Value="TransactionModel.Amount" placeholder="e.g., 1200.50" />
+                <ValidationMessage For="@(() => TransactionModel.Amount)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="type" class="form-label">Type</label>
+                <InputSelect id="type" class="form-select rounded-md" @bind-Value="TransactionModel.Type">
+                    <option value="">Select type</option>
+                    <option value="Expense">Expense</option>
+                    <option value="Income">Income</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => TransactionModel.Type)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <InputDate id="date" class="form-control rounded-md" @bind-Value="TransactionModel.Date" />
+                <ValidationMessage For="@(() => TransactionModel.Date)" />
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <Button Color="ButtonColor.Secondary" Class="rounded-md" @onclick="OnCancel">Cancel</Button>
+                <Button Type="ButtonType.Submit" Color="ButtonColor.Success" Class="float-end me-2">Submit</Button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<Transaction> OnSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private Transaction TransactionModel { get; set; } = new Transaction();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine($"Transaction Submitted: Description={TransactionModel.Description}, Amount={TransactionModel.Amount}, Type={TransactionModel.Type}, Date={TransactionModel.Date.ToShortDateString()}");
+        OnSubmit.InvokeAsync(TransactionModel);
+        TransactionModel = new Transaction(); 
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("Form has validation errors.");
+    }
+
+        public class Transaction
+    {
+        [Required(ErrorMessage = "Description is required.")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Description must be between 3 and 100 characters.")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Amount is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be a positive number.")]
+        public decimal Amount { get; set; }
+
+        [Required(ErrorMessage = "Type is required.")]
+        public string Type { get; set; } = string.Empty; 
+
+        [Required(ErrorMessage = "Date is required.")]
+        public DateTime Date { get; set; } = DateTime.Now;
+    }
+}
